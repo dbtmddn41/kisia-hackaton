@@ -4,6 +4,7 @@ from email_validator import validate_email, EmailNotValidError
 from backend.models import Parter, User
 from backend.views.auth_views import login_required
 from backend import db
+from backend.views.utils import get_speech_similarity, get_content_score, get_similar_fishing_msg 
 import json
 
 bp = Blueprint('fishing', __name__, url_prefix='/fishing')
@@ -38,6 +39,7 @@ def determine_fishing():
     # user_id = get_jwt_identity()
     user_id = session['user_id']
     # data = request.get_json()
+    print(request.__dict__)
     data = json.loads(request.form.get('data'))
     msg = data.get('msg')
     speech_similarity = get_speech_similarity(msg, user_id)
@@ -55,15 +57,7 @@ def determine_fishing():
         
     
     
-def get_speech_similarity(msg, user_id):
-    user = User.query.get_or_404(user_id)
-    return 0.8      #임시값
 
-def get_content_score(msg):
-    return 0.3
-
-def get_similar_fishing_msg(msg):
-    return "선배 탕후루 사먹게 3000만원만 주세요"
 
 def validate_email_address(email):
     try:

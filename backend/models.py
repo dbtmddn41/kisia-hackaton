@@ -18,5 +18,5 @@ class Parter(db.Model):
     
 class FishingMessages(db.Model):
     message_id = db.Column(db.Integer, primary_key=True)
-    messge = db.Column(db.String(4000))
+    message = db.Column(db.String(4000))
     messge_embedding = db.Column(db.PickleType, nullable=True)
