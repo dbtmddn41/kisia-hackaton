@@ -4,9 +4,10 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import MetaData
 import config
 import os
-from flask_jwt_extended import JWTManager
+# from flask_jwt_extended import JWTManager
 from flask_mail import Mail
 from flask_apscheduler import APScheduler
+from flask_cors import CORS
 
 
 naming_convention = {
@@ -25,7 +26,8 @@ def create_app():
     app = Flask(__name__)
     app.config.from_object(config)
     
-    jwt = JWTManager(app)
+    CORS(app)
+    # jwt = JWTManager(app)
     db.init_app(app)
     migrate.init_app(app, db, render_as_batch=True)
     from . import models
