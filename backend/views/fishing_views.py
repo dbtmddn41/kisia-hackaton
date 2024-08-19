@@ -34,7 +34,8 @@ def add_partner():
 @jwt_required()
 def determine_fishing():
     user_id = get_jwt_identity()
-    data = request.get_json()
+    # data = request.get_json()
+    data = json.loads(request.form.get('data'))
     msg = data.get('msg')
     speech_similarity = get_speech_similarity(msg, user_id)
     content_score = get_content_score(msg)
