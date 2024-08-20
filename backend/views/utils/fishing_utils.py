@@ -8,6 +8,9 @@ import faiss
 from sentence_transformers import SentenceTransformer
 embedding_model = SentenceTransformer('sentence-transformers/all-mpnet-base-v2')
 
+def preprocess_partner_msg(msg):
+    pass
+
 def get_speech_similarity(msg, user_id):
     user = User.query.get_or_404(user_id)
     return 0.8      #임시값
