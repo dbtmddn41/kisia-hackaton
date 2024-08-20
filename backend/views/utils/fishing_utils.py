@@ -5,9 +5,8 @@ from flask_mail import Message
 import numpy as np
 import json
 import faiss
-from FlagEmbedding import BGEM3FlagModel
-
-embedding_model = BGEM3FlagModel('BAAI/bge-m3', use_fp16=True)
+from sentence_transformers import SentenceTransformer
+embedding_model = SentenceTransformer('sentence-transformers/all-mpnet-base-v2')
 
 def get_speech_similarity(msg, user_id):
     user = User.query.get_or_404(user_id)
