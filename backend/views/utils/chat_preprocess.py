@@ -7,14 +7,13 @@ class ChatProcessor:
         self.path = path
         self.client_name = client_name
         self.person_name = person_name
-        self.file_name = f"{client_name}_{person_name}_chat.txt"
         self.chat_df = None
         self.client_chat_list = []
         self.person_chat_list = []
         self.exclude_list = exclude_list if exclude_list is not None else []
 
     def load_data(self):
-        data = pd.read_csv(self.path + self.file_name, sep='\t', engine='python', encoding='utf-8')
+        data = pd.read_csv(self.path, sep='\t', engine='python', encoding='utf-8')
         title = list(data)
         chat_list = []
         

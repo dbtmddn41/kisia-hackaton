@@ -24,13 +24,13 @@ def add_partner():
     partner_email = data.get('partner_email')
     if not validate_email_address(partner_email):
         return jsonify({"message": "email invalid"}), 400
-        
+    user = User.query.get(user_id)
     past_message = request.files['file'].read().decode('utf-8')
-    # past_message = preprocess_partner_msg(past_message)
+    # past_message = preprocess_partner_msg(request.files['file'], user.user_name, partner_name)
     # messge_embedding = get_message_embedding(past_message)
     partner = Parter(user_id=user_id, partner_name=partner_name, partner_email=partner_email, partner_past_message=past_message)
-    db.session.add(partner)
-    db.session.commit()
+    # db.session.add(partner)
+    # db.session.commit()
     return jsonify({"message": "Partner added successfully"}), 201
 
 @bp.route('/determine_fishing', methods=['POST'])

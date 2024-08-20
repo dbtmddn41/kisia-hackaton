@@ -12,14 +12,17 @@ from torch import Tensor
 import numpy as np
 from backend.views.utils.chat_preprocess import ChatProcessor
 import torch
-
+from io import StringIO
 # embedding_model = SentenceTransformer('sentence-transformers/all-mpnet-base-v2')
 speech_sim_model = AutoModel.from_pretrained('dbtmddn41/speech_tone')
 speech_sim_tokenizer = AutoTokenizer.from_pretrained("llmrails/ember-v1")
 
-def preprocess_partner_msg(msg):
-    pass
-
+def preprocess_partner_msg(msg, user_name, partner_name):
+    chat_processor = ChatProcessor(msg, user_name, partner_name)
+    chat_processor.load_data()
+    chat_processor.process_person_chat()
+    print(chat_processor.get_person_chats())
+    return '\n'.join(chat_processor.get_person_chats())
 
 
 def average_pool(last_hidden_states: Tensor,
