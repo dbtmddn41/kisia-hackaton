@@ -1,5 +1,5 @@
 from flask import Blueprint, jsonify, request, session
-# from flask_jwt_extended import jwt_required, get_jwt_identity
+from flask_jwt_extended import jwt_required, get_jwt_identity
 from email_validator import validate_email, EmailNotValidError
 from backend.models import Parter, User
 from backend.views.auth_views import login_required
@@ -14,10 +14,10 @@ def test():
     return jsonify(message='test'), 200
 
 @bp.route('/add_partner', methods=['POST'])
-@login_required
+@jwt_required()
 def add_partner():
-    # user_id = get_jwt_identity()
-    user_id = session['user_id']
+    user_id = get_jwt_identity()
+    # user_id = session['user_id']
     # data = request.get_json()
     data = json.loads(request.form.get('data'))
     partner_name = data.get('partner_name')
@@ -34,10 +34,10 @@ def add_partner():
     return jsonify({"message": "Partner added successfully"}), 201
 
 @bp.route('/determine_fishing', methods=['POST'])
-@login_required
+@jwt_required()
 def determine_fishing():
-    # user_id = get_jwt_identity()
-    user_id = session['user_id']
+    user_id = get_jwt_identity()
+    # user_id = session['user_id']
     data = request.get_json()
     # print(request.__dict__)
     # data = json.loads(request.form.get('data'))

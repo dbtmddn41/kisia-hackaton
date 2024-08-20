@@ -42,7 +42,7 @@ def search_similar_msgs(query, top_k=3):
     index.add(vectors)
 
     # 쿼리 텍스트를 벡터로 변환
-    query_vector = embedding_model.encode(query, batch_size=12, max_length=8192)['dense_vecs']
+    query_vector = embedding_model.encode(query)
     query_vector = np.array(query_vector).reshape(1, -1).astype('float32')
     
     # FAISS를 사용하여 유사한 벡터 검색
