@@ -26,8 +26,8 @@ def register():
 
 @bp.route('/login', methods=['POST'])
 def login():
-    # data = request.get_json()
-    data = json.loads(request.form.get('data'))
+    data = request.get_json()
+    # data = json.loads(request.form.get('data'))
     user_name = data.get('user_name')
     password = data.get('password')
     
@@ -46,8 +46,6 @@ def login():
 # def protected():
 #     current_user = get_jwt_identity()
 #     return jsonify(logged_in_as=current_user), 200
-
-
 
 
 @bp.route('/test', methods=['GET'])
