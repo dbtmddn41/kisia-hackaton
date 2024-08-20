@@ -48,11 +48,11 @@ def determine_fishing():
     print(user.partner)
     if content_score > 0.5:
         similar_fishing_msg = get_similar_fishing_msg(msg)
-        send_mail(
-                    user.partner[0].partner_email,
-                    title=f'{user.user_name}님께서 피싱 의심 문자를 받았습니다.',
-                    contents=f'{user.user_name}님께서 피싱 의심 문자를 받았습니다.\n{msg}\n라는 내용의 피싱 의심 문자를 받았으니 직접 전화해 확인해보세요!',
-                )
+        # send_mail(
+        #             user.partner[0].partner_email,
+        #             title=f'{user.user_name}님께서 피싱 의심 문자를 받았습니다.',
+        #             contents=f'{user.user_name}님께서 피싱 의심 문자를 받았습니다.\n{msg}\n라는 내용의 피싱 의심 문자를 받았으니 직접 전화해 확인해보세요!',
+        #         )
     else:
         similar_fishing_msg = None
     return jsonify({"input_sentence": msg,
