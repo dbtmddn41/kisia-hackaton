@@ -4,7 +4,7 @@ from email_validator import validate_email, EmailNotValidError
 from backend.models import Parter, User
 # from backend.views.auth_views import login_required
 from backend import db
-# from backend.views.utils.fishing_utils import get_speech_similarity, get_content_score, get_similar_fishing_msg, send_mail
+# from backend.views.utils.fishing_utils import get_speech_similarity, get_content_score, get_similar_fishing_msg, send_mail, preprocess_partner_msg
 import json
 
 bp = Blueprint('fishing', __name__, url_prefix='/fishing')
@@ -55,7 +55,8 @@ def determine_fishing():
         #         )
     else:
         similar_fishing_msg = None
-    return jsonify({"speech_similarity": speech_similarity,
+    return jsonify({"input_sentence": msg,
+                    "speech_similarity": speech_similarity,
                     "content_score": content_score,
                     "similar_fishing_msg": similar_fishing_msg,
                     }), 201

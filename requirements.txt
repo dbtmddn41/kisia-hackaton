@@ -1,0 +1,8 @@
+flask
+flask_cors
+flask_mail
+flask_jwt_extended
+flask_migrate
+faiss
+faiss-gpu
+sentenceitransformers
