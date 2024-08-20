@@ -4,7 +4,7 @@ from email_validator import validate_email, EmailNotValidError
 from backend.models import Parter, User
 # from backend.views.auth_views import login_required
 from backend import db
-# from backend.views.utils.fishing_utils import get_speech_similarity, get_content_score, get_similar_fishing_msg, send_mail, preprocess_partner_msg
+from backend.views.utils.fishing_utils import get_speech_similarity, get_content_score, get_similar_fishing_msg, send_mail, preprocess_partner_msg
 import json
 
 bp = Blueprint('fishing', __name__, url_prefix='/fishing')
@@ -42,17 +42,17 @@ def determine_fishing():
     # print(request.__dict__)
     # data = json.loads(request.form.get('data'))
     msg = data.get('msg')
-    speech_similarity = 0.7#get_speech_similarity(msg, user_id)
-    content_score = 0.6#get_content_score(msg)
     user = User.query.get_or_404(user_id)
+    speech_similarity = get_speech_similarity(msg, user.partner[0].partner_past_message)
+    content_score = get_content_score(msg)
     print(user.partner)
     if content_score > 0.5:
-        similar_fishing_msg = 'qwerqwer'#get_similar_fishing_msg(msg)
-        # send_mail(
-        #             user.partner[0].partner_email,
-        #             title=f'{user.user_name}님께서 피싱 의심 문자를 받았습니다.',
-        #             contents=f'{user.user_name}님께서 피싱 의심 문자를 받았습니다.\n{msg}\n라는 내용의 피싱 의심 문자를 받았으니 직접 전화해 확인해보세요!',
-        #         )
+        similar_fishing_msg = get_similar_fishing_msg(msg)
+        send_mail(
+                    user.partner[0].partner_email,
+                    title=f'{user.user_name}님께서 피싱 의심 문자를 받았습니다.',
+                    contents=f'{user.user_name}님께서 피싱 의심 문자를 받았습니다.\n{msg}\n라는 내용의 피싱 의심 문자를 받았으니 직접 전화해 확인해보세요!',
+                )
     else:
         similar_fishing_msg = None
     return jsonify({"input_sentence": msg,

@@ -6,14 +6,40 @@ import numpy as np
 import json
 import faiss
 from sentence_transformers import SentenceTransformer
+from transformers import AutoModel, AutoTokenizer
+import torch.nn.functional as F
+from torch import Tensor
+import numpy as np
+from backend.views.utils.chat_preprocess import ChatProcessor
+
 embedding_model = SentenceTransformer('sentence-transformers/all-mpnet-base-v2')
+speech_sim_model = AutoModel.from_pretrained('dbtmddn41/speech_tone')
+speech_sim_tokenizer = AutoTokenizer.from_pretrained("llmrails/ember-v1")
 
 def preprocess_partner_msg(msg):
     pass
 
-def get_speech_similarity(msg, user_id):
-    user = User.query.get_or_404(user_id)
-    return 0.8      #임시값
+
+
+def average_pool(last_hidden_states: Tensor,
+                 attention_mask: Tensor) -> Tensor:
+    last_hidden = last_hidden_states.masked_fill(~attention_mask[..., None].bool(), 0.0)
+    return last_hidden.sum(dim=1) / attention_mask.sum(dim=1)[..., None]
+
+def calc_sim(anchor, txt):
+    anchor_inputs = speech_sim_tokenizer(anchor, return_tensors="pt", padding=True, truncation=True).to(speech_sim_model.device)
+    txt_inputs = speech_sim_tokenizer(txt, return_tensors="pt", padding=True, truncation=True).to(speech_sim_model.device)
+
+    anchor_output = speech_sim_model(**anchor_inputs)
+    txt_output = speech_sim_model(**txt_inputs)
+    anchor_embeddings = average_pool(anchor_output.last_hidden_state, anchor_inputs['attention_mask'])
+    anchor_embeddings = F.normalize(anchor_embeddings, p=2, dim=1)
+    txt_embeddings = average_pool(txt_output.last_hidden_state, txt_inputs['attention_mask'])
+    txt_embeddings = F.normalize(txt_embeddings, p=2, dim=1)
+    return (anchor_embeddings @ txt_embeddings.T).item()
+
+def get_speech_similarity(msg, origin_msg):
+    return calc_sim(origin_msg, msg)
 
 def get_content_score(msg):
     return 0.6
