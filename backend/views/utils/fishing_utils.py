@@ -13,9 +13,15 @@ import numpy as np
 from backend.views.utils.chat_preprocess import ChatProcessor
 import torch
 from io import StringIO
+from gluonnlp.data import SentencepieceTokenizer
+from kobert import get_tokenizer
+
 # embedding_model = SentenceTransformer('sentence-transformers/all-mpnet-base-v2')
 speech_sim_model = AutoModel.from_pretrained('dbtmddn41/speech_tone')
 speech_sim_tokenizer = AutoTokenizer.from_pretrained("llmrails/ember-v1")
+content_model = AutoModel.from_pretrained('naayeeoon/Phishing-Detection-Model-Based-on-Korean-Text-Content')
+tok_path = get_tokenizer()
+contnet_tokenizer  = SentencepieceTokenizer(tok_path)
 
 def preprocess_partner_msg(msg, user_name, partner_name):
     chat_processor = ChatProcessor(msg, user_name, partner_name)
@@ -46,7 +52,10 @@ def get_speech_similarity(msg, origin_msg):
     return sim ** 3
 
 def get_content_score(msg):
-    return 0.6
+    with torch.no_grad():
+        inputs = contnet_tokenizer(msg, return_tensors="pt", padding=True, truncation=True).to(speech_sim_model.device)
+        output = content_model(**inputs)
+    return output.items()
 
 def get_similar_fishing_msg(msg):
     return search_similar_msgs(msg)
